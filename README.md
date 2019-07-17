@@ -23,4 +23,4 @@ First of all extract the assets you can use winrar or the rar command (I donot r
 
 ## Development
 
-Well this game is pretty much complete, i think there were some minor bugs which i fixed before uploading and right now i donot think it needs any other extra feature (I added all the powerups i could think of) but still i encourage you to go creative and see if you can improve the project in some manner.
+Well this game is pretty much complete, i think there were some minor bugs which i fixed before uploading and right now i donot think it needs any other extra feature (I added all the powerups i could think of) but still i encourage you to go creative and see if you can improve the project in some manner. One thing you can do is improve the collision detection system. Currently it uses a *very basic* collision detection system that doesn't work well for corner case so I'd be happy if you improve that.
