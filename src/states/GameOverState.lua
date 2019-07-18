@@ -15,7 +15,11 @@ function GameOverState:enter(params)
 	self.score=params.score
 	--get the top ten (or less) highscores
 	local allscores
-	self.highscores=table.subset(table.isort(csvfile:readFile('highscores.lst',':'),function (a,b) return tonumber(a[2])>tonumber(b[2]) end),1,10)
+	if csvfile:readFile('highscores.lst',':') then
+		self.highscores=table.subset(table.isort(csvfile:readFile('highscores.lst',':'),function (a,b) return tonumber(a[2])>tonumber(b[2]) end),1,10)
+	else
+		self.highscores={}
+	end
 	self.highscoreanim=Anima:init()
 	self.highscoreanim:startNewAnimation('opacity',-0.7)
 	self.ishighscore=checkHighScore(self.score,self.highscores)
