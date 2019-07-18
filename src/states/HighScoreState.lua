@@ -14,9 +14,13 @@ function HighScoreState:enter(params)
 	self.background=love.graphics.newImage("assets/images/highscores/frames/"..self.frame..".jpg")	
 	self.allscores=csvfile:readFile('highscores.lst',':')
 	--sort in descending order (note we need to do this tonumber thing otherwise it would compare them as strings which is stupid)
-	table.sort(self.allscores,function (a,b) return tonumber(a[2])>tonumber(b[2]) end)
+	if self.allscores then
+		table.sort(self.allscores,function (a,b) return tonumber(a[2])>tonumber(b[2]) end)
+		self.highscores,self.totalpages=table.divide(self.allscores,5)
+	else
+		self.totalpages=1
+	end
 	--display 5 records per page	
-	self.highscores,self.totalpages=table.divide(self.allscores,5)
 	self.currentpage=1	
 	anima.left:newAnimation('move',5)
 	anima.right:newAnimation('move',5)
@@ -39,10 +43,10 @@ function HighScoreState:update(dt)
 	if love.keyboard.lastKeyPressed=='backspace' or love.keyboard.lastKeyPressed=='escape' then
 		gSounds.blip:play()
 		gStateMachine:change('main-menu')
-	elseif love.keyboard.lastKeyPressed=='right' then
+	elseif love.keyboard.lastKeyPressed=='right' and self.currentpage<self.totalpages then
 		gSounds.select:play()		
 		self.currentpage=math.min(self.totalpages,self.currentpage+1)
-	elseif love.keyboard.lastKeyPressed=='left' then
+	elseif love.keyboard.lastKeyPressed=='left' and self.currentpage>1 then
 		gSounds.select:play()		
 		
 		self.currentpage=math.max(1,self.currentpage-1)
