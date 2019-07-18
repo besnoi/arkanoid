@@ -7,16 +7,20 @@
     More Lua/LOVE2D libraries at https://github.com/YoungNeer/love-lib/
 ]]
 local csvfile={}
+
 function csvfile:parse(infile,sep,format,looping)
     --sep means the seperational character which seperates the key from value, key1=value1,..,keyn=valuen format is mostly used
     --format (1 or 2) means how should the table store the data - 1. in table[key]=value format or 2. in table={{key1,value1},...,{{keyn,valuen}}} format so you'd access it like table[1][1],table[1][2],...table[2][1],etc , format is 1 by default in parse function and 2 by default in read function. Unlike sep, format is not about choice you have to know which format would be more suitable. Another way to think about this is that format 1 means primary key (keys cannot be duplicate) useful for storing evironment variables and format 2 means non-primary key which is useful when dealing with highscores - the same player can top the chart many times with same or different scores
     --looping (true or false) means whether you plan to loop over the table that is to be returned (by default seen as true unless you explicitly say 'false' just so you can use the free (and useless unless you like the format) functions like add and getValue)
+
+    local entries=0
     if io.open(infile,'r') then
         sep=sep or "="    
         local db,counter,s={},1
         for i in io.lines(infile) do
             s=i;
-            for key,value in s:gmatch(string.format("%s%s%s","([%w_-]+)",sep,"(.[^,]+)")) do
+            for key,value in s:gmatch(string.format("%s%s%s","([%w_-]+)",sep,"([%w_-]+)")) do
+                entries=entries+1
                 if format~=2 then
                     db[key]=value
                 else
@@ -33,14 +37,18 @@ function csvfile:parse(infile,sep,format,looping)
                 return db[key]
             end
         end
-        return db;
+        if entries==0 then
+            return false
+        else
+            return db
+        end            
     else
         return nil;
     end
 end
 
-function csvfile:parseFile(filename,sep,looping)
-    return csvfile:parse(love.filesystem.getAppdataDirectory()..filename,sep,looping)
+function csvfile:parseFile(filename,sep,format,looping)
+    return csvfile:parse(love.filesystem.getAppdataDirectory()..filename,sep,format,looping)
 end
 
 function csvfile:read(infile,sep)
